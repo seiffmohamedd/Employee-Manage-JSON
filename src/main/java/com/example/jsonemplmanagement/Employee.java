@@ -63,6 +63,14 @@ public class Employee {
         return knownLanguages;
     }
 
+    public int getScoreForLanguage(String language) {
+        return knownLanguages.stream()
+                .filter(KnownLanguage -> KnownLanguage.getLanguageName().equalsIgnoreCase(language))
+                .mapToInt(KnownLanguage::getScoreOutof100)
+                .findFirst()
+                .orElse(0); // Default to 0 if the language score is not found
+    }
+
     public void setKnownLanguages(List<KnownLanguage> knownLanguages) {
         this.knownLanguages = knownLanguages;
     }

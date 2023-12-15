@@ -9,7 +9,7 @@ import java.util.List;
 
 
 import java.util.*;
-
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -39,40 +39,43 @@ public class EmployeeController {
         return ResponseEntity.ok("Employee added successfully.");
     }
 
-    ////  One route do that requirement
-    @GetMapping("/getEmployeeById/{employeeID}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable int employeeID) {
-        // Check if employeeList is null or empty
-        if (employeeList == null || employeeList.isEmpty()) {
+    @GetMapping("/getEmployee")
+    public ResponseEntity<?> getEmployee(@RequestParam(required = false) Integer employeeID,
+                                         @RequestParam(required = false) String designation) {
+        // Check if both parameters are null
+        if (employeeID == null && designation == null) {
+            return ResponseEntity.badRequest().body("Please provide either employeeID or designation.");
+        }
+
+        // Search by employeeID
+        if (employeeID != null) {
+            for (Employee employee : employeeList) {
+                if (employee.getEmployeeID() == employeeID) {
+                    return ResponseEntity.ok(employee);
+                }
+            }
+            // If no employee with the specified ID is found
             return ResponseEntity.notFound().build();
         }
 
-        // Find and return the employee with the given ID
-        for (Employee employee : employeeList) {
-            if (employee.getEmployeeID() == employeeID) {
-                return ResponseEntity.ok(employee);
+        // Search by designation
+        if (designation != null) {
+            List<Employee> employeesWithDesignation = new ArrayList<>();
+            for (Employee employee : employeeList) {
+                if (employee.getDesignation().equalsIgnoreCase(designation)) {
+                    employeesWithDesignation.add(employee);
+                }
+            }
+            if (!employeesWithDesignation.isEmpty()) {
+                return ResponseEntity.ok(employeesWithDesignation);
+            } else {
+                // If no employee with the specified designation is found
+                return ResponseEntity.notFound().build();
             }
         }
 
-        // If no employee with the specified ID is found
-        return ResponseEntity.notFound().build();
-    }
-
-    @GetMapping("/getEmployeeByDesignation/{designation}")
-    public ResponseEntity<List<Employee>> getEmployeeByDesignation(@PathVariable String designation) {
-        List<Employee> employeesWithDesignation = new ArrayList<>();
-        // Find employees with the given designation
-        for (Employee employee : employeeList) {
-            if (employee.getDesignation().equalsIgnoreCase(designation)) {
-                employeesWithDesignation.add(employee);
-            }
-        }
-        if (!employeesWithDesignation.isEmpty()) {
-            return ResponseEntity.ok(employeesWithDesignation);
-        } else {
-            // If no employee with the specified designation is found
-            return ResponseEntity.notFound().build();
-        }
+        // This should not be reached, but return a bad request if none of the conditions match
+        return ResponseEntity.badRequest().body("Invalid parameters.");
     }
 
     @DeleteMapping("/deleteEmployee/{employeeID}")
@@ -103,6 +106,43 @@ public class EmployeeController {
         // If no employee with the specified ID is found
         return ResponseEntity.status(404).body("No employee found with ID: " + employeeID);
     }
+
+    @GetMapping("/getEmployeesByLanguage")
+    public ResponseEntity<?> getEmployeesByLanguage(
+            @RequestParam String language,
+            @RequestParam int score,
+            @RequestParam(defaultValue = "asc") String order) {
+
+        // Filter employees by language and score
+        List<Employee> filteredEmployees = employeeList.stream()
+                .filter(employee -> employee.getKnownLanguages().stream()
+                        .anyMatch(knownLanguage -> knownLanguage.getLanguageName().equalsIgnoreCase(language)
+                                && knownLanguage.getScoreOutof100() > score))
+                .collect(Collectors.toList());
+
+        // Sort the result based on the specified order and language scores
+        if ("asc".equalsIgnoreCase(order)) {
+            filteredEmployees.sort(Comparator.comparingInt((Employee employee) ->
+                    employee.getScoreForLanguage(language)));
+        } else if ("desc".equalsIgnoreCase(order)) {
+            filteredEmployees.sort(Comparator.comparingInt((Employee employee) ->
+                    employee.getScoreForLanguage(language)).reversed());
+        } else {
+            return ResponseEntity.badRequest().body("Invalid order parameter. Use 'asc' or 'desc'.");
+        }
+
+        if (!filteredEmployees.isEmpty()) {
+            return ResponseEntity.ok(filteredEmployees);
+        } else {
+            // If no employee matches the criteria
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+
+
+
 
 
 
