@@ -18,13 +18,19 @@ public class EmployeeController {
 
     private static List<Employee> employeeList = new ArrayList<>();
 
+
     @GetMapping("/getAllEmployees")
     public ResponseEntity<List<Employee>> getAllEmployees() {
         return ResponseEntity.ok(employeeList);
     }
 
+    /// Validate Employee Structure before adding it
     @PostMapping("/addEmployee")
     public ResponseEntity<String> addEmployee(@RequestBody Employee employee) {
+        if (!employee.isValid()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid employee data.");
+        }
+
         if (employeeList.stream().anyMatch(e -> e.getEmployeeID() == employee.getEmployeeID())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Employee with the same ID already exists.");
         }
@@ -33,6 +39,7 @@ public class EmployeeController {
         return ResponseEntity.ok("Employee added successfully.");
     }
 
+    ////  One route do that requirement
     @GetMapping("/getEmployeeById/{employeeID}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable int employeeID) {
         // Check if employeeList is null or empty

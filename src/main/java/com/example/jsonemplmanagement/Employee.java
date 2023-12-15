@@ -67,6 +67,45 @@ public class Employee {
         this.knownLanguages = knownLanguages;
     }
 
+    public boolean isValid() {
+        return validateName(firstName) &&
+                validateName(lastName) &&
+                validateEmployeeID(employeeID) &&
+                validateDesignation(designation) &&
+                validateKnownLanguages(knownLanguages);
+    }
+
+    private boolean validateName(String name) {
+        // Add your validation logic for the name (e.g., not null or empty)
+        return name != null && !name.isEmpty();
+    }
+
+    private boolean validateEmployeeID(int employeeID) {
+        // Add your validation logic for the employeeID (e.g., positive value)
+        return employeeID > 0;
+    }
+
+    private boolean validateDesignation(String designation) {
+        // Add your validation logic for the designation (e.g., not null or empty)
+        return designation != null && !designation.isEmpty();
+    }
+
+    private boolean validateKnownLanguages(List<KnownLanguage> knownLanguages) {
+        // Add your validation logic for the knownLanguages
+        // For example, check if the list is not null and contains valid KnownLanguage objects
+        return knownLanguages != null && knownLanguages.stream()
+                .allMatch(this::validateKnownLanguage);
+    }
+
+    private boolean validateKnownLanguage(KnownLanguage knownLanguage) {
+        // Add your validation logic for individual KnownLanguage objects
+        // For example, check if languageName is not null or empty and scoreOutof100 is within a valid range
+        return knownLanguage != null &&
+                validateName(knownLanguage.getLanguageName()) &&
+                knownLanguage.getScoreOutof100() >= 0 && knownLanguage.getScoreOutof100() <= 100;
+    }
+
+
 
 
 }
