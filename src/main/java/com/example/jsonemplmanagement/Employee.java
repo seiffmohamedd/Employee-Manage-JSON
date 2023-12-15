@@ -1,5 +1,7 @@
 package com.example.jsonemplmanagement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 public class Employee {
@@ -75,6 +77,7 @@ public class Employee {
         this.knownLanguages = knownLanguages;
     }
 
+    @JsonIgnore
     public boolean isValid() {
         return validateName(firstName) &&
                 validateName(lastName) &&
