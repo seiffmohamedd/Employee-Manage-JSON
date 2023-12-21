@@ -1,0 +1,46 @@
+[ {
+  "firstName" : "John",
+  "lastName" : "Adamo",
+  "employeeID" : 2000,
+  "designation" : "Team Leader",
+  "knownLanguages" : [ {
+    "languageName" : "Perl",
+    "scoreOutof100" : 30
+  }, {
+    "languageName" : "Java",
+    "scoreOutof100" : 65
+  }, {
+    "languageName" : "C++",
+    "scoreOutof100" : 70
+  } ]
+}, {
+  "firstName" : "Sam",
+  "lastName" : "Jackson",
+  "employeeID" : 1000,
+  "designation" : "Manager",
+  "knownLanguages" : [ {
+    "languageName" : "Java",
+    "scoreOutof100" : 90
+  }, {
+    "languageName" : "C#",
+    "scoreOutof100" : 50
+  }, {
+    "languageName" : "C++",
+    "scoreOutof100" : 80
+  } ]
+}, {
+  "firstName" : "John",
+  "lastName" : "Doe",
+  "employeeID" : 3000,
+  "designation" : "Developer",
+  "knownLanguages" : [ {
+    "languageName" : "Python",
+    "scoreOutof100" : 85
+  }, {
+    "languageName" : "JavaScript",
+    "scoreOutof100" : 75
+  }, {
+    "languageName" : "SQL",
+    "scoreOutof100" : 90
+  } ]
+} ]

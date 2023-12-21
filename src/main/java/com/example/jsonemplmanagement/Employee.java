@@ -93,7 +93,7 @@ public class Employee {
 
     private boolean validateEmployeeID(int employeeID) {
         // Add your validation logic for the employeeID (e.g., positive value)
-        return employeeID > 0;
+        return employeeID >= 0;
     }
 
     private boolean validateDesignation(String designation) {
